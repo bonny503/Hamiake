@@ -733,7 +733,7 @@ textarea:focus {
 
 .payment-steps {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   margin: 16px 0;
 }
@@ -752,7 +752,9 @@ textarea:focus {
 }
 
 .payment-steps strong {
+  display: block;
   font-size: 1.08rem;
+  overflow-wrap: anywhere;
 }
 
 .footer {
