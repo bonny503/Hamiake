@@ -710,6 +710,14 @@ textarea:focus {
   font-weight: 950;
 }
 
+.crypto-price {
+  display: grid;
+  gap: 4px;
+  color: var(--mint-dark);
+  font-weight: 900;
+  line-height: 1.35;
+}
+
 .pricing-card ul {
   margin: 0;
   padding-left: 18px;
