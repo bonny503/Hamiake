@@ -201,9 +201,13 @@
 
           <form class="login-panel" id="login">
             <div>
-              <p class="eyebrow">Landlord login</p>
-              <h2>Access your landlord account.</h2>
-              <p>Use this demo login now. Later it can connect to a secure backend with real passwords, M-Pesa subscriptions, and landlord verification.</p>
+              <p class="eyebrow">Landlord account</p>
+              <h2 id="accountTitle">Create landlord account.</h2>
+              <p id="accountIntro">Register, choose a plan, pay, then request admin approval before your listings go live.</p>
+            </div>
+            <div class="account-tabs" role="tablist" aria-label="Landlord account mode">
+              <button class="account-tab active" type="button" data-account-mode="register">Register</button>
+              <button class="account-tab" type="button" data-account-mode="login">Login</button>
             </div>
             <label>
               <span>Landlord name</span>
@@ -214,10 +218,14 @@
               <input id="loginEmail" type="email" placeholder="e.g. landlord@email.com" required>
             </label>
             <label>
+              <span>WhatsApp number</span>
+              <input id="loginPhone" type="tel" placeholder="e.g. 0704770170" required>
+            </label>
+            <label>
               <span>Password</span>
               <input id="loginPassword" type="password" placeholder="Enter password" required>
             </label>
-            <label>
+            <label id="planField">
               <span>Choose subscription plan</span>
               <select id="loginPlan">
                 <option value="Bronze">Bronze - KSh 6,000 / year</option>
@@ -227,8 +235,12 @@
                 <option value="Platinum">Platinum - 0.095 BTC / year</option>
               </select>
             </label>
-            <button class="primary-button" type="submit">Create Account & Pay</button>
+            <button class="primary-button" id="accountSubmit" type="submit">Create Account & Pay</button>
             <p class="form-note" id="loginNote">Create an account, choose a plan, pay by M-Pesa, then admin approves your landlord account.</p>
+            <div class="approval-status" id="approvalStatus">
+              <strong>Status: Not submitted</strong>
+              <span>Create an account and send payment confirmation to admin for approval.</span>
+            </div>
           </form>
 
           <form class="dashboard-form" id="houseForm">
