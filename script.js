@@ -9,7 +9,7 @@ let listings = [
     deposit: 8500,
     status: "available",
     landlord: "Mary Wanjiku",
-    phone: "+254704770170",
+    phone: "+254712345678",
     verified: true,
     water: "Water included",
     electricity: "Token meter",
@@ -27,7 +27,7 @@ let listings = [
     deposit: 18000,
     status: "booked",
     landlord: "Kamau Properties",
-    phone: "+254704770170",
+    phone: "+254701234567",
     verified: true,
     water: "Borehole backup",
     electricity: "Prepaid meter",
@@ -45,7 +45,7 @@ let listings = [
     deposit: 5500,
     status: "available",
     landlord: "Otieno Homes",
-    phone: "+254704770170",
+    phone: "+254733112233",
     verified: false,
     water: "Water shared",
     electricity: "Shared meter",
@@ -63,7 +63,7 @@ let listings = [
     deposit: 26000,
     status: "available",
     landlord: "Mwangi Estates",
-    phone: "+254704770170",
+    phone: "+254722333444",
     verified: true,
     water: "County water and tank",
     electricity: "Token meter",
@@ -81,7 +81,7 @@ let listings = [
     deposit: 10000,
     status: "available",
     landlord: "Achieng Rentals",
-    phone: "+254704770170",
+    phone: "+254745678901",
     verified: true,
     water: "Water included",
     electricity: "Token meter",
@@ -99,7 +99,7 @@ let listings = [
     deposit: 15000,
     status: "occupied",
     landlord: "Coast Homes",
-    phone: "+254704770170",
+    phone: "+254700998877",
     verified: true,
     water: "Water available",
     electricity: "Token meter",
@@ -164,7 +164,9 @@ let activeChip = "all";
 let activeMapLocation = "Nairobi";
 let loggedInLandlord = "";
 let loggedInLandlordEmail = "";
+let loggedInLandlordPhone = "";
 let loggedInLandlordPlan = "Bronze";
+let accountMode = "register";
 let selectedListingId = listings[0].id;
 let pendingListings = [
   {
@@ -333,9 +335,21 @@ function renderPaymentInstructions(planName, planPrice) {
   const accountReference = `${planName.toUpperCase()}-740532`;
   const landlordText = loggedInLandlord ? ` for ${loggedInLandlord}` : "";
   const plan = plans.find((item) => item.name === planName);
+  const approvalMessage = [
+    "Hi Hamiake Admin,",
+    `Landlord approval request: ${loggedInLandlord || "Name not provided"}.`,
+    `Email: ${loggedInLandlordEmail || "Not provided"}.`,
+    `WhatsApp: ${loggedInLandlordPhone || "Not provided"}.`,
+    `Plan: ${planName}.`,
+    `Amount: ${planPrice}.`,
+    "PayBill: 247247.",
+    "Account: 740532.",
+    `Reference: ${accountReference}.`,
+    "I have paid and want my landlord account approved."
+  ].join(" ");
 
   paymentPanel.innerHTML = `
-    <p class="eyebrow">M-Pesa payment</p>
+    <p class="eyebrow">Payment approval</p>
     <h2>${planName} plan selected${landlordText}.</h2>
     <div class="payment-steps">
       <div><span>PayBill</span><strong>247247</strong></div>
@@ -358,7 +372,7 @@ function renderPaymentInstructions(planName, planPrice) {
       <li>Send the M-Pesa or crypto confirmation message to admin on WhatsApp for account approval.</li>
     </ol>
     <div class="detail-actions">
-      <a class="primary-button" href="https://wa.me/254704770170?text=Hi%20Hamiake%20Admin%2C%20I%20want%20to%20activate%20the%20${encodeURIComponent(planName)}%20annual%20plan.%20Amount%3A%20${encodeURIComponent(planPrice)}.%20PayBill%3A%20247247.%20Account%3A%20740532.%20Reference%3A%20${encodeURIComponent(accountReference)}.%20I%20can%20also%20pay%20using%20USDT%2C%20USDC%2C%20or%20RLUSD." target="_blank" rel="noreferrer">Send Confirmation</a>
+      <a class="primary-button" href="https://wa.me/254704770170?text=${encodeURIComponent(approvalMessage)}" target="_blank" rel="noreferrer">Notify Admin for Approval</a>
       <a class="secondary-button" href="tel:+254704770170">Call Admin</a>
     </div>
   `;
@@ -367,6 +381,24 @@ function renderPaymentInstructions(planName, planPrice) {
 
 function getPlanPrice(planName) {
   return plans.find((plan) => plan.name === planName)?.price || "Confirm with admin";
+}
+
+function setAccountMode(mode) {
+  accountMode = mode;
+  document.querySelectorAll(".account-tab").forEach((button) => {
+    button.classList.toggle("active", button.dataset.accountMode === mode);
+  });
+
+  const isRegister = mode === "register";
+  document.querySelector("#accountTitle").textContent = isRegister ? "Create landlord account." : "Login to landlord account.";
+  document.querySelector("#accountIntro").textContent = isRegister
+    ? "Register, choose a plan, pay, then request admin approval before your listings go live."
+    : "Login with your landlord details. Approved accounts can post vacancies for review.";
+  document.querySelector("#planField").style.display = isRegister ? "grid" : "none";
+  document.querySelector("#accountSubmit").textContent = isRegister ? "Create Account & Pay" : "Login";
+  document.querySelector("#loginNote").textContent = isRegister
+    ? "Create an account, choose a plan, pay by M-Pesa, then admin approves your landlord account."
+    : "Demo login: enter your landlord name, email, WhatsApp, and password to open the posting panel.";
 }
 
 function renderApprovalList() {
@@ -505,11 +537,32 @@ document.querySelector("#login").addEventListener("submit", (event) => {
   event.preventDefault();
   loggedInLandlord = document.querySelector("#loginName").value.trim();
   loggedInLandlordEmail = document.querySelector("#loginEmail").value.trim();
+  loggedInLandlordPhone = normalizeKenyaPhone(document.querySelector("#loginPhone").value);
   loggedInLandlordPlan = document.querySelector("#loginPlan").value;
-  document.querySelector("#loginNote").textContent = `Account created for ${loggedInLandlord}. Pay for the ${loggedInLandlordPlan} plan, then admin will approve your landlord account.`;
+  const approvalStatus = document.querySelector("#approvalStatus");
   document.querySelector("#postLandlordName").value = loggedInLandlord;
+  document.querySelector("#postLandlordPhone").value = loggedInLandlordPhone;
   event.target.classList.add("logged-in");
+
+  if (accountMode === "login") {
+    document.querySelector("#loginNote").textContent = `Logged in as ${loggedInLandlord}. If your account is approved, you can post vacancies for admin review.`;
+    approvalStatus.innerHTML = `
+      <strong>Status: Login successful</strong>
+      <span>For real security, this will later verify email/password from a backend database.</span>
+    `;
+    return;
+  }
+
+  document.querySelector("#loginNote").textContent = `Account created for ${loggedInLandlord}. Pay for the ${loggedInLandlordPlan} plan, then notify admin for approval.`;
+  approvalStatus.innerHTML = `
+    <strong>Status: Pending payment confirmation</strong>
+    <span>After payment, tap Notify Admin for Approval. Admin will confirm payment and approve the landlord account manually.</span>
+  `;
   renderPaymentInstructions(loggedInLandlordPlan, getPlanPrice(loggedInLandlordPlan));
+});
+
+document.querySelectorAll(".account-tab").forEach((button) => {
+  button.addEventListener("click", () => setAccountMode(button.dataset.accountMode));
 });
 
 approvalList.addEventListener("click", (event) => {
