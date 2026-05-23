@@ -1,4 +1,4 @@
-const listings = [
+let listings = [
   {
     id: 1,
     name: "Kasarani Sunrise Bedsitter",
@@ -152,15 +152,65 @@ const plans = [
 const listingsGrid = document.querySelector("#listingsGrid");
 const listingDetail = document.querySelector("#listingDetail");
 const pricingGrid = document.querySelector("#pricingGrid");
+const paymentPanel = document.querySelector("#paymentPanel");
 const approvalList = document.querySelector("#approvalList");
+const areaResults = document.querySelector("#areaResults");
 let activeChip = "all";
+let activeMapLocation = "Nairobi";
+let loggedInLandlord = "";
+let loggedInLandlordEmail = "";
+let loggedInLandlordPlan = "Bronze";
 let selectedListingId = listings[0].id;
 let pendingListings = [
-  { name: "Pipeline Bedsitter", location: "Nairobi", rent: 9000, type: "Bedsitter" },
-  { name: "Bamburi Single Room", location: "Mombasa", rent: 6500, type: "Single room" },
+  {
+    name: "Pipeline Bedsitter",
+    location: "Nairobi",
+    area: "Pipeline, near stage",
+    rent: 9000,
+    deposit: 9000,
+    type: "Bedsitter",
+    landlord: "Demo Landlord",
+    phone: "+254704770170",
+    amenities: "Water available, token meter, secure compound",
+    image: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?auto=format&fit=crop&w=1100&q=80",
+  },
+  {
+    name: "Bamburi Single Room",
+    location: "Mombasa",
+    area: "Bamburi, close to main road",
+    rent: 6500,
+    deposit: 6500,
+    type: "Single room",
+    landlord: "Coast Agent",
+    phone: "+254704770170",
+    amenities: "Shared water, prepaid electricity, gated plot",
+    image: "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?auto=format&fit=crop&w=1100&q=80",
+  },
+];
+
+const areaLocations = [
+  { name: "Nairobi", note: "Kasarani, Pipeline, Roysambu, Embakasi, Rongai links" },
+  { name: "Kiambu", note: "Kiambu Road, Ruaka, Ruiru, Kikuyu, Githurai" },
+  { name: "Rongai", note: "Maasai Lodge, Kiserian Road, Tuskys stage areas" },
+  { name: "Thika", note: "Ngoingwa, Makongeni, Section 9, town outskirts" },
+  { name: "Kisumu", note: "Milimani, Mamboleo, Nyalenda, Polyview" },
+  { name: "Mombasa", note: "Bamburi, Nyali, Likoni, Mtwapa, Tudor" },
 ];
 
 const formatKsh = (amount) => `KSh ${amount.toLocaleString("en-KE")}`;
+
+function normalizeKenyaPhone(phone) {
+  const digits = phone.replace(/\D/g, "");
+
+  if (digits.startsWith("254")) return `+${digits}`;
+  if (digits.startsWith("0")) return `+254${digits.slice(1)}`;
+  if (digits.length === 9) return `+254${digits}`;
+  return `+${digits}`;
+}
+
+function getWhatsAppNumber(phone) {
+  return normalizeKenyaPhone(phone).replace("+", "");
+}
 
 function statusClass(status) {
   return status.toLowerCase();
@@ -208,7 +258,7 @@ function renderListings() {
             <strong class="rent">${formatKsh(listing.rent)} / month</strong>
             <div class="card-actions">
               <button class="secondary-button" data-detail="${listing.id}">View Details</button>
-              <a class="contact-button whatsapp" href="https://wa.me/${listing.phone.replace("+", "")}?text=Hi%20${encodeURIComponent(listing.landlord)}%2C%20I%20saw%20${encodeURIComponent(listing.name)}%20on%20Hamiake." target="_blank" rel="noreferrer">WhatsApp</a>
+              <a class="contact-button whatsapp" href="https://wa.me/${getWhatsAppNumber(listing.phone)}?text=Hi%20${encodeURIComponent(listing.landlord)}%2C%20I%20saw%20${encodeURIComponent(listing.name)}%20on%20Hamiake.%20Is%20it%20still%20available%3F" target="_blank" rel="noreferrer">Chat Landlord</a>
             </div>
           </div>
         </article>
@@ -241,10 +291,10 @@ function renderDetail() {
         <div><span>Type</span><strong>${listing.type}</strong></div>
         <div><span>Security</span><strong>${listing.security}</strong></div>
       </div>
-      <p>${listing.water}. ${listing.electricity}. Contact ${listing.landlord} directly, then report the listing if details do not match the house shown.</p>
+      <p>${listing.water}. ${listing.electricity}. Contact ${listing.landlord} directly by WhatsApp, then report the listing if details do not match the house shown.</p>
       <div class="detail-actions">
         <a class="secondary-button" href="tel:${listing.phone}">Call Landlord</a>
-        <a class="primary-button" href="https://wa.me/${listing.phone.replace("+", "")}?text=Hi%2C%20is%20${encodeURIComponent(listing.name)}%20still%20available%3F" target="_blank" rel="noreferrer">WhatsApp Now</a>
+        <a class="primary-button" href="https://wa.me/${getWhatsAppNumber(listing.phone)}?text=Hi%20${encodeURIComponent(listing.landlord)}%2C%20is%20${encodeURIComponent(listing.name)}%20still%20available%3F" target="_blank" rel="noreferrer">Chat on WhatsApp</a>
       </div>
     </div>
   `;
@@ -266,11 +316,44 @@ function renderPlans() {
           <ul>
             ${plan.features.map((feature) => `<li>${feature}</li>`).join("")}
           </ul>
-          <button class="primary-button" data-plan="${plan.name}">Choose ${plan.name}</button>
+          <button class="primary-button" data-plan="${plan.name}" data-price="${plan.price}">Choose ${plan.name}</button>
         </article>
       `
     )
     .join("");
+}
+
+function renderPaymentInstructions(planName, planPrice) {
+  const accountReference = `${planName.toUpperCase()}-740532`;
+  const landlordText = loggedInLandlord ? ` for ${loggedInLandlord}` : "";
+
+  paymentPanel.innerHTML = `
+    <p class="eyebrow">M-Pesa payment</p>
+    <h2>${planName} plan selected${landlordText}.</h2>
+    <div class="payment-steps">
+      <div><span>PayBill</span><strong>247247</strong></div>
+      <div><span>Account</span><strong>740532</strong></div>
+      <div><span>Plan</span><strong>${planName}</strong></div>
+      <div><span>Amount</span><strong>${planPrice}</strong></div>
+    </div>
+    <ol>
+      <li>Open M-Pesa on your phone.</li>
+      <li>Choose Lipa na M-Pesa, then PayBill.</li>
+      <li>Enter business number 247247.</li>
+      <li>Enter account number 740532.</li>
+      <li>Pay ${planPrice} for the ${planName} plan.</li>
+      <li>Send the confirmation message to admin on WhatsApp for activation.</li>
+    </ol>
+    <div class="detail-actions">
+      <a class="primary-button" href="https://wa.me/254704770170?text=Hi%20Hamiake%20Admin%2C%20I%20paid%20for%20the%20${encodeURIComponent(planName)}%20plan.%20Account%3A%20740532.%20Reference%3A%20${encodeURIComponent(accountReference)}." target="_blank" rel="noreferrer">Send Confirmation</a>
+      <a class="secondary-button" href="tel:+254704770170">Call Admin</a>
+    </div>
+  `;
+  paymentPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function getPlanPrice(planName) {
+  return plans.find((plan) => plan.name === planName)?.price || "Confirm with admin";
 }
 
 function renderApprovalList() {
@@ -281,6 +364,10 @@ function renderApprovalList() {
             <article class="approval-item">
               <strong>${listing.name}</strong>
               <span>${listing.type} in ${listing.location} - ${formatKsh(Number(listing.rent))}</span>
+              <span>Landlord: ${listing.landlord} - ${normalizeKenyaPhone(listing.phone)}</span>
+              <span>Email: ${listing.email || "Not provided"}</span>
+              <span>Plan: ${listing.plan || "Bronze"} - confirm payment before approval</span>
+              <span>${listing.amenities}</span>
               <div class="approval-actions">
                 <button data-approve="${index}">Approve</button>
                 <button data-reject="${index}">Reject</button>
@@ -290,6 +377,25 @@ function renderApprovalList() {
         )
         .join("")
     : '<p class="form-note">No pending listings right now.</p>';
+}
+
+function renderAreaResults() {
+  areaResults.innerHTML = areaLocations
+    .map((area) => {
+      const areaListings = listings.filter((listing) => listing.location === area.name);
+      const lowestRent = areaListings.length ? Math.min(...areaListings.map((listing) => listing.rent)) : 0;
+
+      return `
+        <article class="area-card">
+          <strong>${area.name}</strong>
+          <span>${area.note}</span>
+          <span class="tag">${areaListings.length} listings</span>
+          <span class="rent">${areaListings.length ? `From ${formatKsh(lowestRent)}` : "Coming soon"}</span>
+          <button class="secondary-button" data-area-search="${area.name}">Search ${area.name}</button>
+        </article>
+      `;
+    })
+    .join("");
 }
 
 document.querySelector("#searchForm").addEventListener("submit", (event) => {
@@ -305,6 +411,31 @@ document.querySelectorAll(".filter-chip").forEach((button) => {
     activeChip = button.dataset.chip;
     renderListings();
   });
+});
+
+document.querySelectorAll(".map-pin").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".map-pin").forEach((pin) => pin.classList.remove("active"));
+    button.classList.add("active");
+    activeMapLocation = button.dataset.mapLocation;
+    document.querySelector("#locationFilter").value = activeMapLocation;
+    renderListings();
+    document.querySelector("#listings").scrollIntoView({ behavior: "smooth" });
+  });
+});
+
+areaResults.addEventListener("click", (event) => {
+  const areaButton = event.target.closest("[data-area-search]");
+  if (!areaButton) return;
+
+  const area = areaButton.dataset.areaSearch;
+  activeMapLocation = area;
+  document.querySelector("#locationFilter").value = area;
+  document.querySelectorAll(".map-pin").forEach((pin) => {
+    pin.classList.toggle("active", pin.dataset.mapLocation === area);
+  });
+  renderListings();
+  document.querySelector("#listings").scrollIntoView({ behavior: "smooth" });
 });
 
 listingsGrid.addEventListener("click", (event) => {
@@ -325,17 +456,47 @@ document.querySelector("#reportForm").addEventListener("submit", (event) => {
 
 document.querySelector("#houseForm").addEventListener("submit", (event) => {
   event.preventDefault();
+  const locationText = document.querySelector("#houseLocation").value.trim();
+  const locationMatch = areaLocations.find((area) => locationText.toLowerCase().includes(area.name.toLowerCase()));
+  const location = locationMatch?.name || locationText.split(",").pop().trim() || locationText;
+  const amenities = document.querySelector("#houseAmenities").value.trim() || "Amenities to be confirmed";
   const newListing = {
+    id: Date.now(),
     name: document.querySelector("#houseName").value,
-    location: document.querySelector("#houseLocation").value,
+    location,
+    area: locationText,
     type: document.querySelector("#houseType").value,
     rent: Number(document.querySelector("#houseRent").value),
+    deposit: Number(document.querySelector("#houseDeposit").value),
+    status: "available",
+    landlord: document.querySelector("#postLandlordName").value.trim(),
+    email: loggedInLandlordEmail || "Not provided",
+    plan: loggedInLandlordPlan,
+    phone: normalizeKenyaPhone(document.querySelector("#postLandlordPhone").value),
+    verified: false,
+    water: amenities,
+    electricity: "Confirm with landlord",
+    security: "Confirm with landlord",
+    amenities,
+    tags: ["near stage"],
+    image: document.querySelector("#housePhoto").value.trim() || "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1100&q=80",
   };
 
   pendingListings = [newListing, ...pendingListings];
   renderApprovalList();
-  document.querySelector("#houseNote").textContent = "Listing sent to admin approval. Add photos and verification before publishing.";
+  document.querySelector("#houseNote").textContent = `Listing sent to admin approval under the ${loggedInLandlordPlan} plan. After approval, tenants can chat with you on WhatsApp.`;
   event.target.reset();
+});
+
+document.querySelector("#login").addEventListener("submit", (event) => {
+  event.preventDefault();
+  loggedInLandlord = document.querySelector("#loginName").value.trim();
+  loggedInLandlordEmail = document.querySelector("#loginEmail").value.trim();
+  loggedInLandlordPlan = document.querySelector("#loginPlan").value;
+  document.querySelector("#loginNote").textContent = `Account created for ${loggedInLandlord}. Pay for the ${loggedInLandlordPlan} plan, then admin will approve your landlord account.`;
+  document.querySelector("#postLandlordName").value = loggedInLandlord;
+  event.target.classList.add("logged-in");
+  renderPaymentInstructions(loggedInLandlordPlan, getPlanPrice(loggedInLandlordPlan));
 });
 
 approvalList.addEventListener("click", (event) => {
@@ -345,7 +506,15 @@ approvalList.addEventListener("click", (event) => {
 
   if (index === undefined) return;
 
-  pendingListings.splice(Number(index), 1);
+  const listing = pendingListings.splice(Number(index), 1)[0];
+  if (approveButton && listing) {
+    const approvedListing = { ...listing, id: Date.now(), verified: true };
+    listings = [approvedListing, ...listings];
+    selectedListingId = approvedListing.id;
+    renderListings();
+    renderDetail();
+    renderAreaResults();
+  }
   renderApprovalList();
 });
 
@@ -353,11 +522,11 @@ pricingGrid.addEventListener("click", (event) => {
   const planButton = event.target.closest("[data-plan]");
   if (!planButton) return;
 
-  planButton.textContent = `${planButton.dataset.plan} selected`;
-  planButton.disabled = true;
+  renderPaymentInstructions(planButton.dataset.plan, planButton.dataset.price);
 });
 
 renderListings();
 renderDetail();
 renderPlans();
 renderApprovalList();
+renderAreaResults();
