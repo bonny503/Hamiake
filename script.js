@@ -113,38 +113,44 @@ const plans = [
   {
     name: "Bronze",
     price: "KSh 6,000 / year",
+    cryptoPrice: "46 USDT / 46 USDC / 46 RLUSD",
     listingsLimit: "10 active listings",
     color: "#a97142",
-    features: ["10 active listings", "Annual renewal", "M-Pesa, USDT, USDC, or RLUSD payment support"],
+    features: ["10 active listings", "KSh 6,000 yearly", "46 USDT, 46 USDC, or 46 RLUSD"],
   },
   {
     name: "Silver",
     price: "KSh 10,000 / year",
+    cryptoPrice: "77 USDT / 77 USDC / 77 RLUSD",
     listingsLimit: "20 active listings",
     color: "#8794a6",
-    features: ["20 active listings", "Annual renewal", "Listing analytics and faster admin approval"],
+    features: ["20 active listings", "KSh 10,000 yearly", "77 USDT, 77 USDC, or 77 RLUSD"],
   },
   {
     name: "Gold",
     price: "KSh 15,000 / year",
+    cryptoPrice: "116 USDT / 116 USDC / 116 RLUSD",
     listingsLimit: "30 active listings",
     color: "#d49a18",
     featured: true,
-    features: ["30 active listings", "Annual renewal", "Featured search placement and verified badge"],
+    features: ["30 active listings", "KSh 15,000 yearly", "116 USDT, 116 USDC, or 116 RLUSD"],
   },
   {
     name: "Diamond",
     price: "KSh 20,000 / year",
+    cryptoPrice: "154 USDT / 154 USDC / 154 RLUSD",
     listingsLimit: "40 active listings",
     color: "#2f80ed",
-    features: ["40 active listings", "Annual renewal", "Photo/video priority and lead export support"],
+    features: ["40 active listings", "KSh 20,000 yearly", "154 USDT, 154 USDC, or 154 RLUSD"],
   },
   {
     name: "Platinum",
     price: "0.095 BTC / year",
+    kshEquivalent: "Approx. KSh 928,000 / year",
+    cryptoPrice: "Approx. 7,150 USDT / 7,150 USDC / 7,150 RLUSD",
     listingsLimit: "50 active listings",
     color: "#222f3e",
-    features: ["50 active listings", "Annual renewal", "Top city placement and dedicated support"],
+    features: ["50 active listings", "0.095 BTC yearly", "Approx. KSh 928,000 or 7,150 USDT/USDC/RLUSD"],
   },
 ];
 
@@ -312,6 +318,7 @@ function renderPlans() {
             <span class="plan-badge" style="background:${plan.color}">${plan.name.slice(0, 1)}</span>
           </div>
           <div class="plan-price">${plan.price}</div>
+          <div class="crypto-price">${plan.kshEquivalent ? `<span>${plan.kshEquivalent}</span>` : ""}<span>${plan.cryptoPrice}</span></div>
           <ul>
             ${plan.features.map((feature) => `<li>${feature}</li>`).join("")}
           </ul>
@@ -335,6 +342,7 @@ function renderPaymentInstructions(planName, planPrice) {
       <div><span>Account</span><strong>740532</strong></div>
       <div><span>Plan</span><strong>${planName}</strong></div>
       <div><span>Amount</span><strong>${planPrice}</strong></div>
+      <div><span>Crypto price</span><strong>${plan?.cryptoPrice || "Confirm with admin"}</strong></div>
       <div><span>Renewal</span><strong>Annual</strong></div>
       <div><span>Limit</span><strong>${plan?.listingsLimit || "Confirm limit"}</strong></div>
       <div><span>Stablecoins</span><strong>USDT / USDC / RLUSD</strong></div>
