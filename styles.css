@@ -281,6 +281,35 @@ textarea:focus {
   font-size: 0.92rem;
 }
 
+.contact-strip {
+  padding: 34px 0;
+  background: white;
+  border-bottom: 1px solid var(--line);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+}
+
+.contact-grid h2 {
+  margin-bottom: 6px;
+}
+
+.contact-grid p:not(.eyebrow) {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  gap: 10px;
+}
+
 .section-grid,
 #subscriptions {
   padding: 68px 0;
@@ -419,6 +448,105 @@ textarea:focus {
   padding-bottom: 68px;
 }
 
+.map-band {
+  padding: 68px 0;
+  background: #f4f8fb;
+  border-block: 1px solid var(--line);
+}
+
+.map-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.65fr) minmax(320px, 0.95fr) minmax(260px, 0.6fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.kenya-map {
+  position: relative;
+  min-height: 420px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(18, 168, 107, 0.14), rgba(47, 128, 237, 0.12)),
+    url("https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80") center / cover;
+  box-shadow: var(--shadow);
+}
+
+.kenya-map::after {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.map-pin {
+  position: absolute;
+  min-height: 36px;
+  border: 2px solid white;
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: var(--ink);
+  color: white;
+  box-shadow: 0 10px 28px rgba(19, 32, 26, 0.22);
+  font-weight: 900;
+}
+
+.map-pin.active,
+.map-pin:hover {
+  background: var(--mint);
+}
+
+.map-pin.nairobi {
+  left: 48%;
+  top: 39%;
+}
+
+.map-pin.kiambu {
+  left: 42%;
+  top: 28%;
+}
+
+.map-pin.rongai {
+  left: 54%;
+  top: 51%;
+}
+
+.map-pin.thika {
+  left: 59%;
+  top: 24%;
+}
+
+.map-pin.kisumu {
+  left: 17%;
+  top: 39%;
+}
+
+.map-pin.mombasa {
+  right: 10%;
+  bottom: 12%;
+}
+
+.area-results {
+  display: grid;
+  gap: 10px;
+}
+
+.area-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.area-card strong {
+  font-size: 1.05rem;
+}
+
 .listing-detail {
   overflow: hidden;
 }
@@ -483,8 +611,22 @@ textarea:focus {
 }
 
 .dashboard-form,
+.login-panel,
 .admin-panel {
   padding: 20px;
+}
+
+.dashboard-form {
+  grid-column: 2;
+}
+
+.login-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 10px 36px rgba(19, 32, 26, 0.06);
+  display: grid;
+  gap: 13px;
 }
 
 .form-row {
@@ -574,6 +716,45 @@ textarea:focus {
   color: var(--muted);
 }
 
+.payment-panel {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  padding: 20px;
+  box-shadow: 0 10px 36px rgba(19, 32, 26, 0.06);
+}
+
+.payment-panel ol {
+  margin: 14px 0;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.payment-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.payment-steps div {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 12px;
+  background: var(--soft);
+}
+
+.payment-steps span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.payment-steps strong {
+  font-size: 1.08rem;
+}
+
 .footer {
   padding: 28px 0 42px;
   border-top: 1px solid var(--line);
@@ -584,16 +765,30 @@ textarea:focus {
   .listings-grid,
   .detail-layout,
   .dashboard-grid,
+  .map-layout,
   .pricing-grid,
+  .contact-grid,
   .trust-grid {
     grid-template-columns: 1fr;
+  }
+
+  .contact-actions {
+    justify-content: start;
   }
 
   .admin-panel {
     grid-column: auto;
   }
 
+  .dashboard-form {
+    grid-column: auto;
+  }
+
   .detail-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .payment-steps {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -625,6 +820,11 @@ textarea:focus {
     padding: 58px 0 28px;
   }
 
+  .nav-actions a:nth-child(4),
+  .nav-actions a:nth-child(6) {
+    display: none;
+  }
+
   .hero-copy {
     font-size: 0.98rem;
   }
@@ -634,9 +834,19 @@ textarea:focus {
   }
 
   .section-grid,
+  .map-band,
   #subscriptions,
   .landlord-band {
     padding: 46px 0;
+  }
+
+  .kenya-map {
+    min-height: 330px;
+  }
+
+  .map-pin {
+    font-size: 0.78rem;
+    padding: 6px 9px;
   }
 
   .detail-layout {
@@ -650,6 +860,10 @@ textarea:focus {
   }
 
   .detail-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-steps {
     grid-template-columns: 1fr;
   }
 }
