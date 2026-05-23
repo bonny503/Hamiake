@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hamiake Rentals Kenya</title>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="app-shell">
+      <nav class="topbar" aria-label="Primary navigation">
+        <a class="brand" href="#home" aria-label="Hamiake home">
+          <span class="brand-mark">H</span>
+          <span>
+            <strong>Hamiake</strong>
+            <small>Verified rentals Kenya</small>
+          </span>
+        </a>
+        <div class="nav-actions">
+          <a href="#listings">Search</a>
+          <a href="#dashboard">Landlords</a>
+          <a href="#subscriptions">Pricing</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="hero-media" role="img" aria-label="Modern Nairobi apartment buildings"></div>
+        <div class="hero-content app-shell">
+          <p class="eyebrow">Website first. App experience from day one.</p>
+          <h1>Find verified rooms, bedsitters, and apartments across Kenya.</h1>
+          <p class="hero-copy">
+            Search vacancies by town, rent, house type, and landlord trust signals. Tenants call or WhatsApp instantly,
+            while landlords manage status and leads from a simple dashboard.
+          </p>
+
+          <form class="search-panel" id="searchForm">
+            <label>
+              <span>Location</span>
+              <select id="locationFilter">
+                <option value="all">All Kenya</option>
+                <option>Nairobi</option>
+                <option>Kiambu</option>
+                <option>Rongai</option>
+                <option>Thika</option>
+                <option>Kisumu</option>
+                <option>Mombasa</option>
+              </select>
+            </label>
+            <label>
+              <span>House type</span>
+              <select id="typeFilter">
+                <option value="all">Any type</option>
+                <option>Single room</option>
+                <option>Bedsitter</option>
+                <option>1-bedroom</option>
+                <option>2-bedroom</option>
+              </select>
+            </label>
+            <label>
+              <span>Max rent</span>
+              <select id="rentFilter">
+                <option value="999999">Any budget</option>
+                <option value="6000">Up to KSh 6,000</option>
+                <option value="10000">Up to KSh 10,000</option>
+                <option value="18000">Up to KSh 18,000</option>
+                <option value="30000">Up to KSh 30,000</option>
+              </select>
+            </label>
+            <button class="primary-button" type="submit">Search Houses</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="trust-band">
+        <div class="app-shell trust-grid">
+          <div>
+            <strong>Verified-first listings</strong>
+            <span>Photos, location hints, landlord identity checks, and admin approval.</span>
+          </div>
+          <div>
+            <strong>WhatsApp-ready leads</strong>
+            <span>Tenants tap call or WhatsApp without creating an account.</span>
+          </div>
+          <div>
+            <strong>Status control</strong>
+            <span>Landlords mark houses available, booked, or occupied.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="app-shell section-grid" id="listings">
+        <div class="section-heading">
+          <p class="eyebrow">Tenant search</p>
+          <h2>Available vacancies</h2>
+          <p>Mobile-friendly listings for single rooms, bedsitters, 1-bedroom, and 2-bedroom houses.</p>
+        </div>
+        <div class="listing-controls" aria-label="Quick filters">
+          <button class="filter-chip active" data-chip="all">All</button>
+          <button class="filter-chip" data-chip="verified">Verified</button>
+          <button class="filter-chip" data-chip="near stage">Near stage</button>
+          <button class="filter-chip" data-chip="water included">Water included</button>
+        </div>
+        <div class="listings-grid" id="listingsGrid"></div>
+      </section>
+
+      <section class="app-shell detail-layout" id="details">
+        <article class="listing-detail" id="listingDetail" aria-live="polite"></article>
+        <aside class="report-box">
+          <h2>Report fake listing</h2>
+          <p>Trust is the product. Tenants can flag suspicious houses, false photos, wrong rent, or fake agents.</p>
+          <form id="reportForm">
+            <label>
+              <span>Reason</span>
+              <select id="reportReason">
+                <option>Fake photos</option>
+                <option>Wrong location</option>
+                <option>Already occupied</option>
+                <option>Suspicious agent</option>
+              </select>
+            </label>
+            <label>
+              <span>Phone or email</span>
+              <input id="reportContact" type="text" placeholder="Optional contact">
+            </label>
+            <button class="secondary-button" type="submit">Submit Report</button>
+            <p class="form-note" id="reportNote"></p>
+          </form>
+        </aside>
+      </section>
+
+      <section class="landlord-band" id="dashboard">
+        <div class="app-shell dashboard-grid">
+          <div class="section-heading">
+            <p class="eyebrow">Landlord dashboard</p>
+            <h2>Post and manage vacancies fast.</h2>
+            <p>Add rent, deposit, photos, amenities, status, and contact buttons. Admin approval keeps the marketplace clean.</p>
+          </div>
+
+          <form class="dashboard-form" id="houseForm">
+            <div class="form-row">
+              <label>
+                <span>House name</span>
+                <input id="houseName" type="text" placeholder="e.g. Sunrise Bedsitter" required>
+              </label>
+              <label>
+                <span>Location</span>
+                <input id="houseLocation" type="text" placeholder="e.g. Kasarani, Nairobi" required>
+              </label>
+            </div>
+            <div class="form-row">
+              <label>
+                <span>Type</span>
+                <select id="houseType">
+                  <option>Single room</option>
+                  <option>Bedsitter</option>
+                  <option>1-bedroom</option>
+                  <option>2-bedroom</option>
+                </select>
+              </label>
+              <label>
+                <span>Rent</span>
+                <input id="houseRent" type="number" min="1000" placeholder="KSh per month" required>
+              </label>
+            </div>
+            <label>
+              <span>Amenities</span>
+              <textarea id="houseAmenities" rows="3" placeholder="Water, token meter, security, distance from road"></textarea>
+            </label>
+            <button class="primary-button" type="submit">Send for Approval</button>
+            <p class="form-note" id="houseNote"></p>
+          </form>
+
+          <div class="admin-panel" id="admin">
+            <h2>Admin approval panel</h2>
+            <div class="approval-list" id="approvalList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="app-shell" id="subscriptions">
+        <div class="section-heading pricing-heading">
+          <p class="eyebrow">Landlord subscription</p>
+          <h2>Monthly plans for every landlord and agent.</h2>
+          <p>Start small, upgrade for more listings, featured placement, verification support, and lead tools.</p>
+        </div>
+        <div class="pricing-grid" id="pricingGrid"></div>
+      </section>
+    </main>
+
+    <footer class="footer app-shell">
+      <strong>Hamiake Rentals Kenya</strong>
+      <span>Built for Google, WhatsApp, Facebook, TikTok, and shared links first. Android app later.</span>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
