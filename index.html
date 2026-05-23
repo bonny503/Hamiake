@@ -19,8 +19,11 @@
         </a>
         <div class="nav-actions">
           <a href="#listings">Search</a>
+          <a href="#map">Map</a>
+          <a href="#login">Login</a>
           <a href="#dashboard">Landlords</a>
           <a href="#subscriptions">Pricing</a>
+          <a href="#contact">Contact</a>
         </div>
       </nav>
     </header>
@@ -91,6 +94,20 @@
         </div>
       </section>
 
+      <section class="contact-strip" id="contact">
+        <div class="app-shell contact-grid">
+          <div>
+            <p class="eyebrow">Admin contact</p>
+            <h2>Talk to Hamiake admin.</h2>
+            <p>For landlord subscriptions, verified listings, support, or reporting suspicious agents.</p>
+          </div>
+          <div class="contact-actions">
+            <a class="secondary-button" href="tel:+254704770170">Call +254 704 770 170</a>
+            <a class="primary-button" href="https://wa.me/254704770170?text=Hi%20Hamiake%20Admin%2C%20I%20need%20help%20with%20rentals." target="_blank" rel="noreferrer">WhatsApp Admin</a>
+          </div>
+        </div>
+      </section>
+
       <section class="app-shell section-grid" id="listings">
         <div class="section-heading">
           <p class="eyebrow">Tenant search</p>
@@ -104,6 +121,25 @@
           <button class="filter-chip" data-chip="water included">Water included</button>
         </div>
         <div class="listings-grid" id="listingsGrid"></div>
+      </section>
+
+      <section class="map-band" id="map">
+        <div class="app-shell map-layout">
+          <div class="section-heading">
+            <p class="eyebrow">Search map</p>
+            <h2>Browse houses by Kenyan area.</h2>
+            <p>Select an area to filter vacancies instantly. Later this can connect to Google Maps or OpenStreetMap with exact pins.</p>
+          </div>
+          <div class="kenya-map" aria-label="Rental search map by area">
+            <button class="map-pin nairobi active" data-map-location="Nairobi">Nairobi</button>
+            <button class="map-pin kiambu" data-map-location="Kiambu">Kiambu</button>
+            <button class="map-pin rongai" data-map-location="Rongai">Rongai</button>
+            <button class="map-pin thika" data-map-location="Thika">Thika</button>
+            <button class="map-pin kisumu" data-map-location="Kisumu">Kisumu</button>
+            <button class="map-pin mombasa" data-map-location="Mombasa">Mombasa</button>
+          </div>
+          <div class="area-results" id="areaResults"></div>
+        </div>
       </section>
 
       <section class="app-shell detail-layout" id="details">
@@ -136,10 +172,53 @@
           <div class="section-heading">
             <p class="eyebrow">Landlord dashboard</p>
             <h2>Post and manage vacancies fast.</h2>
-            <p>Add rent, deposit, photos, amenities, status, and contact buttons. Admin approval keeps the marketplace clean.</p>
+            <p>Add rent, deposit, photos, amenities, and your WhatsApp number. After admin approval, tenants can chat with you directly.</p>
           </div>
 
+          <form class="login-panel" id="login">
+            <div>
+              <p class="eyebrow">Landlord login</p>
+              <h2>Access your landlord account.</h2>
+              <p>Use this demo login now. Later it can connect to a secure backend with real passwords, M-Pesa subscriptions, and landlord verification.</p>
+            </div>
+            <label>
+              <span>Landlord name</span>
+              <input id="loginName" type="text" placeholder="e.g. Mary Wanjiku" required>
+            </label>
+            <label>
+              <span>Email address</span>
+              <input id="loginEmail" type="email" placeholder="e.g. landlord@email.com" required>
+            </label>
+            <label>
+              <span>Password</span>
+              <input id="loginPassword" type="password" placeholder="Enter password" required>
+            </label>
+            <label>
+              <span>Choose subscription plan</span>
+              <select id="loginPlan">
+                <option value="Bronze">Bronze - KSh 499</option>
+                <option value="Silver">Silver - KSh 999</option>
+                <option value="Gold">Gold - KSh 1,999</option>
+                <option value="Diamond">Diamond - KSh 3,999</option>
+                <option value="Platinum">Platinum - KSh 6,999</option>
+                <option value="Bitcoin">Bitcoin - BTC / month</option>
+              </select>
+            </label>
+            <button class="primary-button" type="submit">Create Account & Pay</button>
+            <p class="form-note" id="loginNote">Create an account, choose a plan, pay by M-Pesa, then admin approves your landlord account.</p>
+          </form>
+
           <form class="dashboard-form" id="houseForm">
+            <div class="form-row">
+              <label>
+                <span>Landlord name</span>
+                <input id="postLandlordName" type="text" placeholder="e.g. Mary Wanjiku" required>
+              </label>
+              <label>
+                <span>Landlord WhatsApp</span>
+                <input id="postLandlordPhone" type="tel" placeholder="e.g. 0704770170" required>
+              </label>
+            </div>
             <div class="form-row">
               <label>
                 <span>House name</span>
@@ -165,6 +244,16 @@
                 <input id="houseRent" type="number" min="1000" placeholder="KSh per month" required>
               </label>
             </div>
+            <div class="form-row">
+              <label>
+                <span>Deposit</span>
+                <input id="houseDeposit" type="number" min="0" placeholder="KSh deposit" required>
+              </label>
+              <label>
+                <span>Photo URL</span>
+                <input id="housePhoto" type="url" placeholder="Optional house photo link">
+              </label>
+            </div>
             <label>
               <span>Amenities</span>
               <textarea id="houseAmenities" rows="3" placeholder="Water, token meter, security, distance from road"></textarea>
@@ -184,15 +273,20 @@
         <div class="section-heading pricing-heading">
           <p class="eyebrow">Landlord subscription</p>
           <h2>Monthly plans for every landlord and agent.</h2>
-          <p>Start small, upgrade for more listings, featured placement, verification support, and lead tools.</p>
+          <p>Start small, upgrade for more listings, featured placement, verification support, and lead tools. Pay with M-Pesa PayBill 247247, account 740532.</p>
         </div>
         <div class="pricing-grid" id="pricingGrid"></div>
+        <div class="payment-panel" id="paymentPanel" aria-live="polite">
+          <p class="eyebrow">M-Pesa payment</p>
+          <h2>Select a plan to see payment instructions.</h2>
+          <p>After paying, WhatsApp admin your M-Pesa confirmation message for activation.</p>
+        </div>
       </section>
     </main>
 
     <footer class="footer app-shell">
       <strong>Hamiake Rentals Kenya</strong>
-      <span>Built for Google, WhatsApp, Facebook, TikTok, and shared links first. Android app later.</span>
+      <span>Admin: +254 704 770 170. Built for Google, WhatsApp, Facebook, TikTok, and shared links first.</span>
     </footer>
 
     <script src="script.js"></script>
