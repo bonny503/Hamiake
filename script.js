@@ -112,40 +112,39 @@ let listings = [
 const plans = [
   {
     name: "Bronze",
-    price: "KSh 499",
+    price: "KSh 6,000 / year",
+    listingsLimit: "10 active listings",
     color: "#a97142",
-    features: ["3 active listings", "Call and WhatsApp leads", "Basic landlord profile"],
+    features: ["10 active listings", "Annual renewal", "M-Pesa, USDT, USDC, or RLUSD payment support"],
   },
   {
     name: "Silver",
-    price: "KSh 999",
+    price: "KSh 10,000 / year",
+    listingsLimit: "20 active listings",
     color: "#8794a6",
-    features: ["8 active listings", "Listing analytics", "Faster admin approval"],
+    features: ["20 active listings", "Annual renewal", "Listing analytics and faster admin approval"],
   },
   {
     name: "Gold",
-    price: "KSh 1,999",
+    price: "KSh 15,000 / year",
+    listingsLimit: "30 active listings",
     color: "#d49a18",
     featured: true,
-    features: ["20 active listings", "Featured search placement", "Verified landlord badge"],
+    features: ["30 active listings", "Annual renewal", "Featured search placement and verified badge"],
   },
   {
     name: "Diamond",
-    price: "KSh 3,999",
+    price: "KSh 20,000 / year",
+    listingsLimit: "40 active listings",
     color: "#2f80ed",
-    features: ["50 active listings", "Photo and video priority", "Lead export support"],
+    features: ["40 active listings", "Annual renewal", "Photo/video priority and lead export support"],
   },
   {
     name: "Platinum",
-    price: "KSh 6,999",
+    price: "0.095 BTC / year",
+    listingsLimit: "50 active listings",
     color: "#222f3e",
-    features: ["Unlimited active listings", "Top city placement", "Dedicated account support"],
-  },
-  {
-    name: "Bitcoin",
-    price: "BTC / month",
-    color: "#f7931a",
-    features: ["Crypto-friendly billing", "Premium investor badge", "Early access to paid boosting"],
+    features: ["50 active listings", "Annual renewal", "Top city placement and dedicated support"],
   },
 ];
 
@@ -308,7 +307,7 @@ function renderPlans() {
           <div class="plan-top">
             <div>
               <h3>${plan.name}</h3>
-              <p>${plan.featured ? "Best for serious agents" : "Monthly landlord plan"}</p>
+              <p>${plan.featured ? "Best for serious agents" : "Annual renewable plan"}</p>
             </div>
             <span class="plan-badge" style="background:${plan.color}">${plan.name.slice(0, 1)}</span>
           </div>
@@ -326,6 +325,7 @@ function renderPlans() {
 function renderPaymentInstructions(planName, planPrice) {
   const accountReference = `${planName.toUpperCase()}-740532`;
   const landlordText = loggedInLandlord ? ` for ${loggedInLandlord}` : "";
+  const plan = plans.find((item) => item.name === planName);
 
   paymentPanel.innerHTML = `
     <p class="eyebrow">M-Pesa payment</p>
@@ -335,6 +335,10 @@ function renderPaymentInstructions(planName, planPrice) {
       <div><span>Account</span><strong>740532</strong></div>
       <div><span>Plan</span><strong>${planName}</strong></div>
       <div><span>Amount</span><strong>${planPrice}</strong></div>
+      <div><span>Renewal</span><strong>Annual</strong></div>
+      <div><span>Limit</span><strong>${plan?.listingsLimit || "Confirm limit"}</strong></div>
+      <div><span>Stablecoins</span><strong>USDT / USDC / RLUSD</strong></div>
+      <div><span>Approval</span><strong>After payment</strong></div>
     </div>
     <ol>
       <li>Open M-Pesa on your phone.</li>
@@ -342,10 +346,11 @@ function renderPaymentInstructions(planName, planPrice) {
       <li>Enter business number 247247.</li>
       <li>Enter account number 740532.</li>
       <li>Pay ${planPrice} for the ${planName} plan.</li>
-      <li>Send the confirmation message to admin on WhatsApp for activation.</li>
+      <li>For USDT, USDC, or RLUSD, request wallet details from admin before sending crypto.</li>
+      <li>Send the M-Pesa or crypto confirmation message to admin on WhatsApp for account approval.</li>
     </ol>
     <div class="detail-actions">
-      <a class="primary-button" href="https://wa.me/254704770170?text=Hi%20Hamiake%20Admin%2C%20I%20paid%20for%20the%20${encodeURIComponent(planName)}%20plan.%20Account%3A%20740532.%20Reference%3A%20${encodeURIComponent(accountReference)}." target="_blank" rel="noreferrer">Send Confirmation</a>
+      <a class="primary-button" href="https://wa.me/254704770170?text=Hi%20Hamiake%20Admin%2C%20I%20want%20to%20activate%20the%20${encodeURIComponent(planName)}%20annual%20plan.%20Amount%3A%20${encodeURIComponent(planPrice)}.%20PayBill%3A%20247247.%20Account%3A%20740532.%20Reference%3A%20${encodeURIComponent(accountReference)}.%20I%20can%20also%20pay%20using%20USDT%2C%20USDC%2C%20or%20RLUSD." target="_blank" rel="noreferrer">Send Confirmation</a>
       <a class="secondary-button" href="tel:+254704770170">Call Admin</a>
     </div>
   `;
