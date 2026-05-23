@@ -629,6 +629,41 @@ textarea:focus {
   gap: 13px;
 }
 
+.account-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.account-tab {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: white;
+  color: var(--muted);
+  padding: 10px;
+  font-weight: 900;
+}
+
+.account-tab.active {
+  border-color: var(--mint);
+  background: var(--soft);
+  color: var(--mint-dark);
+}
+
+.approval-status {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--soft);
+  padding: 12px;
+  display: grid;
+  gap: 4px;
+}
+
+.approval-status span {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
